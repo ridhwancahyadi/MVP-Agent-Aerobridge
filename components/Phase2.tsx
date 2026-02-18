@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { ShieldWarning, GasPump, Clock, Package, Warning, Thermometer, ArrowRight, ArrowLeft, Sliders, Binoculars, ListChecks, Lightning, Drop, TrendUp, WarningOctagon, Wind, Airplane, ArrowElbowDownRight, Scales, Stack, Crosshair, CloudFog, Info, CheckSquare, Square } from '@phosphor-icons/react';
+import { ShieldWarning, GasPump, Clock, Package, Warning, Thermometer, ArrowRight, ArrowLeft, Sliders, Binoculars, ListChecks, Lightning, Drop, TrendUp, WarningOctagon, Wind, Airplane, ArrowElbowDownRight, Scales, Stack, Crosshair, CloudFog, Info, CheckSquare, Square, MapPin, CaretRight } from '@phosphor-icons/react';
 import TacticalMap from './TacticalMap';
 
 interface Phase2Props {
@@ -178,12 +178,132 @@ const Phase2: React.FC<Phase2Props> = ({ onBack, onNext }) => {
   }, [payloadMod, fuel, objectives, tempDeviation, windFactor]);
 
   const [selectedStrategy, setSelectedStrategy] = useState('Early Departure');
+  
+  // STRATEGY DEFINITIONS WITH DYNAMIC REASONING & IMPACT
   const strategies = [
-    { name: 'Early Departure', score: 85, level: 'hi', desc: 'Depart 06:00. Optimal Density Altitude.', rec: true },
-    { name: 'Standard Profile', score: 61, level: 'mid', desc: 'Depart 10:00. Balanced risk/reward.', rec: false },
-    { name: 'Split Payload', score: 92, level: 'hi', desc: 'Two sorties. Max Safety Margin.', rec: false },
-    { name: 'Hold Mission', score: 40, level: 'lo', desc: 'Wait for visibility > 8km.', rec: false },
+    { 
+      name: 'Early Departure', 
+      score: 85, 
+      level: 'hi', 
+      desc: 'Depart 06:00. Optimal Density Altitude.', 
+      rec: true,
+      reasoning: {
+        headsUp: [
+            { k: 'Advantage', v: 'Cool Air (22°C)', c: 'text-green' },
+            { k: 'Density Alt', v: '~9,277 ft (Ilaga)', c: 'text-text' },
+            { k: 'Risk', v: 'Morning Fog (Leg 2)', c: 'text-yellow' }
+        ],
+        mitigations: [
+            'Minimize OGE hover time on approach.',
+            'Takeoff before thermal buildup.'
+        ],
+        contingencies: [
+            'If Vis < 5km: DIVERT to Wamena immediately.',
+            'Alt Landing Zone: Sector 4 Valley.'
+        ]
+      },
+      impact: [
+        { k: 'Fuel Deviation', v: 'Normal', c: 'text-green' },
+        { k: 'Time Added', v: '+0 min', c: 'text-green' },
+        { k: 'Seg 1 Safety', v: '✓ Cleared', c: 'text-green' },
+        { k: 'Seg 2 Safety', v: '✓ Cleared', c: 'text-green' },
+        { k: 'Crew Risk', v: 'LOW', c: 'text-green' },
+        { k: 'Payload', v: '100% (700kg)', c: 'text-text-hi' }
+      ]
+    },
+    { 
+      name: 'Standard Profile', 
+      score: 61, 
+      level: 'mid', 
+      desc: 'Depart 10:00. Balanced risk/reward.', 
+      rec: false,
+      reasoning: {
+        headsUp: [
+            { k: 'Temp Rise', v: '+6°C vs Early', c: 'text-orange' },
+            { k: 'Performance', v: '-12% Lift Margin', c: 'text-red' },
+            { k: 'Turbulence', v: 'Mod over ridges', c: 'text-yellow' }
+        ],
+        mitigations: [
+            'Reduce payload by 50kg recommended.',
+            'Approach via valley floor (avoid ridges).'
+        ],
+        contingencies: [
+            'Hold at Waypoint Alpha for thermal decay.',
+            'Abort if CHT limits exceeded.'
+        ]
+      },
+      impact: [
+        { k: 'Fuel Deviation', v: '+5% (Cooling)', c: 'text-yellow' },
+        { k: 'Time Added', v: '+10 min', c: 'text-yellow' },
+        { k: 'Seg 1 Safety', v: '⚠ Margins', c: 'text-orange' },
+        { k: 'Seg 2 Safety', v: '✓ Cleared', c: 'text-green' },
+        { k: 'Crew Risk', v: 'MEDIUM', c: 'text-orange' },
+        { k: 'Payload', v: '90% (Rec)', c: 'text-yellow' }
+      ]
+    },
+    { 
+      name: 'Split Payload', 
+      score: 92, 
+      level: 'hi', 
+      desc: 'Two sorties. Max Safety Margin.', 
+      rec: false,
+      reasoning: {
+        headsUp: [
+            { k: 'Ops Tempo', v: 'High (2 Sorties)', c: 'text-text' },
+            { k: 'Duration', v: '+2.5 Hours', c: 'text-orange' },
+            { k: 'Safety', v: 'Max OGE Margin', c: 'text-green' }
+        ],
+        mitigations: [
+            'Crew fatigue monitoring required.',
+            'Hot refueling at Wamena between sorties.'
+        ],
+        contingencies: [
+            'Cancel Sortie 2 if weather deteriorates > 12:00.',
+            'Load Priority Cargo on Sortie 1.'
+        ]
+      },
+      impact: [
+        { k: 'Fuel Deviation', v: '+80% (2 Sorties)', c: 'text-orange' },
+        { k: 'Time Added', v: '+2.5 Hours', c: 'text-red' },
+        { k: 'Seg 1 Safety', v: '✓ Max Margin', c: 'text-green' },
+        { k: 'Seg 2 Safety', v: '✓ Max Margin', c: 'text-green' },
+        { k: 'Crew Risk', v: 'LOW', c: 'text-green' },
+        { k: 'Payload', v: '100% (2 Trips)', c: 'text-text-hi' }
+      ]
+    },
+    { 
+      name: 'Hold Mission', 
+      score: 40, 
+      level: 'lo', 
+      desc: 'Wait for visibility > 8km.', 
+      rec: false,
+      reasoning: {
+        headsUp: [
+            { k: 'Window', v: 'Closing Rapidly', c: 'text-red' },
+            { k: 'Probability', v: '40% Cancel Chance', c: 'text-red' },
+            { k: 'Logistics', v: 'Backlog Increasing', c: 'text-yellow' }
+        ],
+        mitigations: [
+            'Maintain Readiness State 2.',
+            'Monitor satellite feeds every 30m.'
+        ],
+        contingencies: [
+            'Push mission to Day+1 if no window by 14:00.',
+            'Switch to ground transport for non-urgent.'
+        ]
+      },
+      impact: [
+        { k: 'Fuel Deviation', v: 'N/A', c: 'text-text-lo' },
+        { k: 'Time Added', v: '+12 Hours', c: 'text-red' },
+        { k: 'Seg 1 Safety', v: 'Pending', c: 'text-text-lo' },
+        { k: 'Seg 2 Safety', v: 'Pending', c: 'text-text-lo' },
+        { k: 'Crew Risk', v: 'LOW', c: 'text-green' },
+        { k: 'Payload', v: 'Delayed', c: 'text-red' }
+      ]
+    },
   ];
+
+  const activeStrat = strategies.find(s => s.name === selectedStrategy) || strategies[0];
 
   const getScoreColor = (val: number) => val > 75 ? 'text-green' : val > 50 ? 'text-yellow' : 'text-red';
   const rangeClass = "w-full h-1 bg-black/50 rounded-lg appearance-none cursor-pointer hover:bg-black/70 transition-all";
@@ -263,93 +383,68 @@ const Phase2: React.FC<Phase2Props> = ({ onBack, onNext }) => {
                 ))}
                 </div>
             </div>
-
-            {/* Asset & Task Mapping */}
-            <div>
-                <div className="font-mono text-[9px] tracking-[3px] uppercase text-text-lo mb-2 flex items-center gap-2">
-                    Asset & Task Mapping <span className="flex-1 h-px bg-border"></span>
-                </div>
-                <div className="bg-black/20 border border-border rounded p-3 relative">
-                    <div className="flex items-center gap-3 mb-4 relative z-10">
-                        <div className="w-8 h-8 rounded bg-accent/10 border border-accent/30 flex items-center justify-center text-accent shadow-[0_0_10px_rgba(0,229,255,0.15)]">
-                            <Airplane size={18} weight="duotone" className="rotate-[-45deg]"/>
-                        </div>
-                        <div>
-                            <div className="text-[10px] font-bold text-text-hi tracking-wide">EC725 CARACAL</div>
-                            <div className="text-[8px] font-mono text-text-lo flex items-center gap-2">
-                                <span>ROTARY WING</span>
-                                <span className="text-accent flex items-center gap-1"><Drop weight="fill" size={8}/> {fuel}KG</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="absolute top-7 left-[27px] bottom-6 w-px border-l border-dashed border-text-lo/30 z-0"></div>
-                    <div className="flex flex-col gap-2 ml-8 relative z-10">
-                        <div className="flex items-start gap-2 group">
-                            <ArrowElbowDownRight size={12} className="text-text-lo mt-1 shrink-0 group-hover:text-accent transition-colors"/>
-                            <div className="bg-black/40 border border-border group-hover:border-accent/50 rounded p-1.5 w-full transition-colors">
-                                <div className="flex justify-between text-[9px] font-bold text-text-hi">
-                                    <span>DROP: WAMENA</span>
-                                    <span className="text-accent bg-accent/10 px-1 rounded">300 KG</span>
-                                </div>
-                                <div className="text-[8px] font-mono text-text-lo mt-0.5">Med Supplies (Urgent)</div>
-                            </div>
-                        </div>
-                        <div className="flex items-start gap-2 group">
-                            <ArrowElbowDownRight size={12} className="text-text-lo mt-1 shrink-0 group-hover:text-accent transition-colors"/>
-                            <div className="bg-black/40 border border-border group-hover:border-accent/50 rounded p-1.5 w-full transition-colors">
-                                <div className="flex justify-between text-[9px] font-bold text-text-hi">
-                                    <span>DROP: ILAGA</span>
-                                    <span className="text-accent bg-accent/10 px-1 rounded">200 KG</span>
-                                </div>
-                                <div className="text-[8px] font-mono text-text-lo mt-0.5">Power Units</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
             
-            {/* AI REASONING (Detailed) */}
-            <div className="flex-1 flex flex-col gap-2 overflow-hidden min-h-[160px]">
+            {/* AI REASONING (Unified One-Tone Card) - Expanded to fill column */}
+            <div className="flex-1 flex flex-col gap-2 min-h-[300px]">
                 <div className="font-mono text-[9px] tracking-[3px] uppercase text-text-lo flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse"></span>
                     Agent Reasoning <span className="flex-1 h-px bg-border"></span>
                 </div>
                 
-                <div className="overflow-y-auto pr-1 flex flex-col gap-2 custom-scrollbar">
-                    {/* Pilot Heads Up */}
-                    <div className="bg-accent/5 border border-accent/15 rounded p-2">
-                         <div className="flex items-center gap-2 mb-1">
-                            <Binoculars size={12} className="text-accent" />
-                            <span className="text-[9px] font-bold text-text-hi uppercase tracking-wider">Pilot Heads Up</span>
+                {/* Unified Reasoning Card - CLEAN ONE TONE */}
+                <div className="bg-black/20 border border-border-hi rounded-md overflow-hidden flex-1 flex flex-col shadow-lg animate-[fadeIn_0.3s_ease]">
+                    <div className="bg-white/5 p-3 border-b border-border flex justify-between items-center">
+                         <div className="text-[10px] font-bold text-text-hi flex items-center gap-2">
+                            <Binoculars size={14} className="text-accent"/> INTEL SUMMARY
                          </div>
-                         <ul className="text-[9px] font-mono text-text-lo space-y-1 pl-1 list-disc list-inside">
-                            <li><span className="text-yellow">Weakest Leg:</span> Timika→Wamena (Min Margin {analysis.dynamicMargin.toFixed(4)}).</li>
-                            <li><span className="text-text">Density Altitude:</span> ~9277 ft (Ilaga).</li>
-                            <li><span className="text-orange">Visibility:</span> Marginal (5.0 km) on Leg 2.</li>
-                         </ul>
+                         <div className="text-[8px] font-mono text-text-lo tracking-wider">STRATEGY: {selectedStrategy.toUpperCase()}</div>
                     </div>
+                    
+                    <div className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-5">
+                        
+                        {/* Section 1: Heads Up - Simplified */}
+                        <div>
+                             <div className="text-[9px] font-mono text-text-lo uppercase tracking-widest mb-2 flex items-center gap-2 border-b border-border/30 pb-1">
+                                <WarningOctagon size={12} className="text-text"/> Operational Risks
+                             </div>
+                             <div className="flex flex-col gap-1.5">
+                                {activeStrat.reasoning.headsUp.map((item, i) => (
+                                    <div key={i} className="flex justify-between items-center text-[10px]">
+                                        <span className="text-text-lo font-mono">{item.k}</span>
+                                        <span className={`font-bold ${item.c}`}>{item.v}</span>
+                                    </div>
+                                ))}
+                             </div>
+                        </div>
 
-                    {/* Mitigations */}
-                    <div className="bg-green/5 border border-green/15 rounded p-2">
-                         <div className="flex items-center gap-2 mb-1">
-                            <ListChecks size={12} className="text-green" />
-                            <span className="text-[9px] font-bold text-text-hi uppercase tracking-wider">Mitigations</span>
-                         </div>
-                         <ul className="text-[9px] font-mono text-text-lo space-y-1 pl-1 list-disc list-inside">
-                            <li>Minimize OGE hover time on approach.</li>
-                            <li>Early departure for cooler air (Density Alt).</li>
-                         </ul>
-                    </div>
+                         {/* Section 2: Mitigations - Clean list */}
+                         <div>
+                             <div className="text-[9px] font-mono text-text-lo uppercase tracking-widest mb-2 flex items-center gap-2 border-b border-border/30 pb-1">
+                                <CheckSquare size={12} className="text-green"/> Mitigations
+                             </div>
+                             <ul className="space-y-1.5">
+                                {activeStrat.reasoning.mitigations.map((m, i) => (
+                                    <li key={i} className="text-[10px] text-text flex items-start gap-2 leading-relaxed">
+                                        <span className="text-green mt-0.5"><CaretRight size={10} weight="bold"/></span> {m}
+                                    </li>
+                                ))}
+                             </ul>
+                        </div>
 
-                     {/* Contingencies */}
-                     <div className="bg-red/5 border border-red/15 rounded p-2">
-                         <div className="flex items-center gap-2 mb-1">
-                            <Lightning size={12} className="text-red" />
-                            <span className="text-[9px] font-bold text-text-hi uppercase tracking-wider">Contingencies</span>
-                         </div>
-                         <ul className="text-[9px] font-mono text-text-lo space-y-1 pl-1 list-disc list-inside">
-                            <li>If Vis {'<'} 5km: <span className="text-text">DIVERT</span> to Wamena.</li>
-                         </ul>
+                         {/* Section 3: Contingencies - Clean list */}
+                         <div>
+                             <div className="text-[9px] font-mono text-text-lo uppercase tracking-widest mb-2 flex items-center gap-2 border-b border-border/30 pb-1">
+                                <ArrowElbowDownRight size={12} className="text-red"/> Contingencies
+                             </div>
+                             <ul className="space-y-1.5">
+                                {activeStrat.reasoning.contingencies.map((c, i) => (
+                                    <li key={i} className="text-[10px] text-text flex items-start gap-2 leading-relaxed">
+                                        <span className="text-red mt-0.5"><CaretRight size={10} weight="bold"/></span> {c}
+                                    </li>
+                                ))}
+                             </ul>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -371,42 +466,65 @@ const Phase2: React.FC<Phase2Props> = ({ onBack, onNext }) => {
                                     <div className="w-1.5 h-1.5 rounded-full bg-accent shadow-[0_0_4px_var(--accent)]"></div>
                                     LEG 1: TIMIKA <ArrowRight size={10} className="text-text-lo"/> WAMENA
                                 </div>
-                                <div className="font-mono text-[9px] text-text-lo pl-3.5 mt-0.5">126.54 NM · 0.904 HRS · {Math.round(analysis.totalPayload * 0.6)}KG PL</div>
+                                <div className="font-mono text-[9px] text-text-lo pl-3.5 mt-0.5">126.54 NM · 0.904 HRS</div>
                             </div>
                             <div className="text-right">
                                 <div className="font-mono text-[8px] text-yellow bg-yellow/10 px-1.5 py-0.5 rounded border border-yellow/20">WEAKEST MARGIN</div>
                             </div>
                         </div>
+
+                        {/* Asset & Payload Context */}
+                        <div className="mt-2 mb-2 p-1.5 bg-accent/5 border border-accent/10 rounded flex justify-between items-center">
+                            <div className="flex items-center gap-2 text-[9px] font-mono text-text-hi">
+                                <Airplane size={12} className="text-accent" weight="fill" /> <span>EC725 CARACAL</span>
+                            </div>
+                            <div className="flex items-center gap-1 text-[9px] font-mono text-text-lo">
+                                <Package size={12} weight="fill" className="text-accent"/> <span className="text-text-hi font-bold">300 KG</span> <span className="hidden sm:inline">(Med Supplies)</span>
+                            </div>
+                        </div>
+
                         <div className="grid grid-cols-2 gap-x-4 gap-y-2 font-mono text-[9px] border-t border-border/40 pt-2">
                             <div className="flex justify-between items-center"><span className="text-text-lo">ETA</span> <span className="text-text-hi">06:54</span></div>
                             <div className="flex justify-between items-center"><span className="text-text-lo">Weather</span> <span className="text-green">VIS 6KM</span></div>
                             <div className="flex justify-between items-center"><span className="text-text-lo">Density Alt</span> <span className="text-text-hi">6,678 FT</span></div>
-                            <div className="flex justify-between items-center"><span className="text-text-lo">Fuel Need</span> <span className="text-text-hi">{Math.round(analysis.fuelUsed * 0.6)} KG</span></div>
+                            <div className="flex justify-between items-center"><span className="text-text-lo">Fuel Burn</span> <span className="text-text-hi">{Math.round(analysis.fuelUsed * 0.6)} KG</span></div>
                             <div className="col-span-2 flex justify-between items-center bg-red/5 p-1 rounded border border-red/10">
                                 <span className="text-red flex items-center gap-1"><ShieldWarning size={10} weight="fill"/> MIN MARGIN</span> 
                                 <span className="text-red font-bold">{analysis.dynamicMargin.toFixed(4)} (CRITICAL)</span>
                             </div>
                         </div>
                     </div>
+                    
                     {/* Leg 2 */}
                     <div className="bg-black/30 border border-border rounded p-3 relative group hover:border-border-hi transition-colors shrink-0">
                         <div className="flex justify-between items-start mb-2">
                             <div>
                                 <div className="text-[10px] font-bold text-text-hi flex items-center gap-2">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-yellow shadow-[0_0_4px_var(--yellow)]"></div>
+                                    <div className="w-1.5 h-1.5 rounded-full bg-green shadow-[0_0_4px_var(--green)]"></div>
                                     LEG 2: WAMENA <ArrowRight size={10} className="text-text-lo"/> ILAGA
                                 </div>
-                                <div className="font-mono text-[9px] text-text-lo pl-3.5 mt-0.5">78.7 NM · 0.562 HRS · {Math.round(analysis.totalPayload * 0.4)}KG PL</div>
+                                <div className="font-mono text-[9px] text-text-lo pl-3.5 mt-0.5">78.7 NM · 0.562 HRS</div>
                             </div>
                             <div className="text-right">
                                 <div className="font-mono text-[8px] text-orange bg-orange/10 px-1.5 py-0.5 rounded border border-orange/20">VIS ALERT</div>
                             </div>
                         </div>
+
+                         {/* Asset & Payload Context */}
+                         <div className="mt-2 mb-2 p-1.5 bg-green/5 border border-green/10 rounded flex justify-between items-center">
+                            <div className="flex items-center gap-2 text-[9px] font-mono text-text-hi">
+                                <Airplane size={12} className="text-green" weight="fill" /> <span>EC725 CARACAL</span>
+                            </div>
+                            <div className="flex items-center gap-1 text-[9px] font-mono text-text-lo">
+                                <Lightning size={12} weight="fill" className="text-green"/> <span className="text-text-hi font-bold">200 KG</span> <span className="hidden sm:inline">(Power Units)</span>
+                            </div>
+                        </div>
+
                         <div className="grid grid-cols-2 gap-x-4 gap-y-2 font-mono text-[9px] border-t border-border/40 pt-2">
                             <div className="flex justify-between items-center"><span className="text-text-lo">ETA</span> <span className="text-text-hi">08:05</span></div>
                             <div className="flex justify-between items-center"><span className="text-text-lo">Weather</span> <span className="text-orange font-bold">VIS 5KM (MARG)</span></div>
                             <div className="flex justify-between items-center"><span className="text-text-lo">Density Alt</span> <span className="text-red">9,277 FT</span></div>
-                            <div className="flex justify-between items-center"><span className="text-text-lo">Fuel Need</span> <span className="text-text-hi">{Math.round(analysis.fuelUsed * 0.4)} KG</span></div>
+                            <div className="flex justify-between items-center"><span className="text-text-lo">Fuel Burn</span> <span className="text-text-hi">{Math.round(analysis.fuelUsed * 0.4)} KG</span></div>
                         </div>
                     </div>
                 </div>
@@ -582,15 +700,10 @@ const Phase2: React.FC<Phase2Props> = ({ onBack, onNext }) => {
                     Impact Summary <span className="flex-1 h-px bg-border"></span>
                 </div>
                 <div className="bg-black/30 border border-border rounded-md p-2.5 mb-2">
-                    {[
-                        { k: 'Fuel Used', v: `${analysis.fuelUsed.toFixed(1)} kg`, c: 'text-text' }, 
-                        { k: 'Time', v: `${analysis.timeEst.toFixed(3)} hr`, c: 'text-text' },
-                        { k: 'Distance', v: `${analysis.dist.toFixed(2)} NM`, c: 'text-text' },
-                        { k: 'Min Margin', v: analysis.dynamicMargin.toFixed(4), c: analysis.dynamicMargin < 0.15 ? 'text-red' : 'text-yellow' },
-                    ].map((r, i) => (
-                        <div key={i} className="flex justify-between font-mono text-[9px] py-1 border-b border-border/40 last:border-0">
-                        <span className="text-text-lo">{r.k}</span>
-                        <span className={r.c}>{r.v}</span>
+                    {activeStrat.impact.map((r, i) => (
+                        <div key={i} className="flex justify-between font-mono text-[9px] py-1 border-b border-border/40 last:border-0 items-center">
+                            <span className="text-text-lo uppercase tracking-wide">{r.k}</span>
+                            <span className={`${r.c} font-bold`}>{r.v}</span>
                         </div>
                     ))}
                 </div>
