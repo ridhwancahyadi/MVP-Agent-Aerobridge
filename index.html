@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AeroMind TACTICAL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              bg: '#02080c',
+              surface: '#050f17',
+              surface2: '#071422',
+              panel: '#04111a',
+              border: '#0f2d40',
+              'border-hi': '#174060',
+              accent: '#00e5ff',
+              'accent-dim': 'rgba(0, 229, 255, 0.1)',
+              accent2: '#0077aa',
+              green: '#39ff7a',
+              'green-dim': 'rgba(57, 255, 122, 0.1)',
+              green2: '#1da84a',
+              yellow: '#ffd700',
+              red: '#ff3333',
+              'red-dim': 'rgba(255, 51, 51, 0.1)',
+              orange: '#ff8c00',
+              dim: '#2a5060',
+              text: '#9dc8d8',
+              'text-hi': '#d8eef8',
+              'text-lo': '#2e6070',
+            },
+            fontFamily: {
+              mono: ['"Share Tech Mono"', 'monospace'],
+              sans: ['"Rajdhani"', 'sans-serif'],
+              orbitron: ['"Orbitron"', 'sans-serif'],
+            },
+            animation: {
+              'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'scan': 'scan 4s linear infinite',
+            },
+            keyframes: {
+              scan: {
+                '0%': { transform: 'translateY(-100%)' },
+                '100%': { transform: 'translateY(100%)' }
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        background-color: #02080c;
+        overflow-x: hidden;
+      }
+      /* Custom scrollbar */
+      ::-webkit-scrollbar { width: 4px; }
+      ::-webkit-scrollbar-track { background: #02080c; }
+      ::-webkit-scrollbar-thumb { background: #174060; border-radius: 2px; }
+      
+      /* CRT Scanline effect */
+      .scanlines {
+        background: repeating-linear-gradient(
+          to bottom,
+          transparent 0px,
+          transparent 3px,
+          rgba(0,0,0,0.06) 3px,
+          rgba(0,0,0,0.06) 4px
+        );
+        pointer-events: none;
+        z-index: 50;
+      }
+      .grid-bg {
+        background-image:
+          linear-gradient(rgba(0,229,255,.025) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0,229,255,.025) 1px, transparent 1px);
+        background-size: 50px 50px;
+        pointer-events: none;
+        z-index: 0;
+      }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4",
+    "@phosphor-icons/react": "https://esm.sh/@phosphor-icons/react@^2.1.10"
+  }
+}
+</script>
+</head>
+<body>
+    <div id="root"></div>
+</body>
+</html>

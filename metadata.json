@@ -1,0 +1,5 @@
+{
+  "name": "AeroMind TACTICAL",
+  "description": "A futuristic operations mission planner for tactical logistics, featuring natural language parsing, AI-driven route analysis, and execution monitoring.",
+  "requestFramePermissions": []
+}
