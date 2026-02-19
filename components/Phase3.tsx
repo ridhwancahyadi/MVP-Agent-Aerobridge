@@ -13,17 +13,6 @@ const Phase3: React.FC<Phase3Props> = ({ onBack, onExecute }) => {
         <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-accent rounded-tl-lg z-10"></div>
         <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-accent rounded-br-lg z-10"></div>
 
-        {/* Header */}
-        <div className="p-5 border-b border-border flex justify-between items-start bg-accent/5">
-          <div>
-            <div className="font-orbitron text-base font-bold text-text-hi tracking-widest uppercase">Execution Plan</div>
-            <div className="font-mono text-[10px] text-text-lo mt-1 tracking-wider">// MISSION MANIFESTO GENERATED · PILOT BRIEFING READY</div>
-          </div>
-          <div className="font-mono text-[9px] text-green text-right tracking-widest">
-            MANIFESTO: DEMO-001<br />GENERATED: T+0
-          </div>
-        </div>
-
         {/* Body */}
         <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] divide-y lg:divide-y-0 lg:divide-x divide-border">
           

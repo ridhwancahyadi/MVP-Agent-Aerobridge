@@ -41,25 +41,16 @@ const Phase1: React.FC<Phase1Props> = ({ onNext }) => {
   const [missionDate, setMissionDate] = useState<string>(new Date().toISOString().split('T')[0]);
 
   // State for Route
-  const [routes, setRoutes] = useState<RouteItem[]>([
-    { id: 1, location: 'Timika (Base)' },
-    { id: 2, location: 'Wamena (Stop 1)' },
-    { id: 3, location: 'Ilaga (Dest)' }
-  ]);
+  const [routes, setRoutes] = useState<RouteItem[]>([]);
   const [newRouteLoc, setNewRouteLoc] = useState('');
 
   // State for Dynamic Fleet
-  const [fleets, setFleets] = useState<FleetItem[]>([
-    { id: 1, name: 'EC725 Caracal', type: 'Rotary', cap: 'HEAVY LIFT', fuel: 1200 },
-  ]);
+  const [fleets, setFleets] = useState<FleetItem[]>([]);
   const [selectedAircraft, setSelectedAircraft] = useState<string>(AIRCRAFT_OPTIONS[1].name);
   const [newFleetFuel, setNewFleetFuel] = useState('');
 
   // State for Dynamic Payload
-  const [payloads, setPayloads] = useState<PayloadItem[]>([
-    { id: 1, item: 'Medical Supplies', weight: 300, origin: 'Timika', dest: 'Wamena', isUrgent: true },
-    { id: 2, item: 'Power Units', weight: 200, origin: 'Timika', dest: 'Ilaga', isUrgent: false },
-  ]);
+  const [payloads, setPayloads] = useState<PayloadItem[]>([]);
   
   // Payload Form State
   const [pItem, setPItem] = useState('');
@@ -68,17 +59,47 @@ const Phase1: React.FC<Phase1Props> = ({ onNext }) => {
   const [pDest, setPDest] = useState('');
   const [pIsUrgent, setPIsUrgent] = useState(false);
 
-  const fullText = "Transport 300kg Cargo to Wamena and 200kg to Ilaga from Timika. Asset: EC725 Caracal.";
+  const [isGenerating, setIsGenerating] = useState(false);
 
-  useEffect(() => {
+  const templateText = "Melaksanakan penerbangan dari Timika menuju Wamena dan Ilaga dengan membawa muatan berupa 300 kg medical supplies untuk Wamena dan 200 kg power unit untuk Ilaga, menggunakan helikopter EC725 Caracal.";
+
+  const handleGenerate = (textToType: string = templateText) => {
+    if (isGenerating) return;
+    setIsGenerating(true);
+    setCommandText('');
+    setRoutes([]);
+    setFleets([]);
+    setPayloads([]);
+
     let i = 0;
     const interval = setInterval(() => {
-      setCommandText(fullText.slice(0, i));
+      setCommandText(textToType.slice(0, i));
       i++;
-      if (i > fullText.length) clearInterval(interval);
-    }, 30);
-    return () => clearInterval(interval);
-  }, []);
+      if (i > textToType.length) {
+        clearInterval(interval);
+        // Simulate processing delay then populate
+        setTimeout(() => {
+            populateMissionData();
+            setIsGenerating(false);
+        }, 800);
+      }
+    }, 20);
+  };
+
+  const populateMissionData = () => {
+    setRoutes([
+        { id: 1, location: 'Timika (Base)' },
+        { id: 2, location: 'Wamena (Stop 1)' },
+        { id: 3, location: 'Ilaga (Dest)' }
+    ]);
+    setFleets([
+        { id: 1, name: 'EC725 Caracal', type: 'Rotary', cap: 'HEAVY LIFT', fuel: 1200 },
+    ]);
+    setPayloads([
+        { id: 1, item: 'Medical Supplies', weight: 300, origin: 'Timika', dest: 'Wamena', isUrgent: true },
+        { id: 2, item: 'Power Units', weight: 200, origin: 'Timika', dest: 'Ilaga', isUrgent: false },
+    ]);
+  };
 
   // --- Route Handlers ---
   const handleRouteChange = (id: number, val: string) => {
@@ -163,18 +184,6 @@ const Phase1: React.FC<Phase1Props> = ({ onNext }) => {
         <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-accent rounded-tl-lg z-10"></div>
         <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-accent rounded-br-lg z-10"></div>
 
-        {/* Header */}
-        <div className="p-4 border-b border-border flex justify-between items-start bg-accent/5">
-          <div>
-            <div className="font-orbitron text-base font-bold text-text-hi tracking-widest uppercase">Command Input</div>
-            <div className="font-mono text-[10px] text-text-lo mt-1 tracking-wider">// NATURAL LANGUAGE MISSION PARSER · AUTO-INTEL ACTIVE</div>
-          </div>
-          <div className="font-mono text-[9px] text-text-lo text-right tracking-widest">
-            MISSION ID: DEMO-001<br />
-            CLASSIFICATION: RESTRICTED
-          </div>
-        </div>
-
         {/* Body - Using Grid for Precision */}
         <div className="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-border">
           
@@ -186,8 +195,25 @@ const Phase1: React.FC<Phase1Props> = ({ onNext }) => {
                 <div className="font-mono text-[9px] tracking-[3px] uppercase text-text-lo mb-2 flex items-center gap-2">
                 Natural Language Command <span className="flex-1 h-px bg-border"></span>
                 </div>
-                <div className="bg-black/40 border border-border-hi rounded-md p-3 font-mono text-xs text-accent leading-relaxed min-h-[70px] relative shadow-inner">
-                {commandText}<span className="animate-pulse">█</span>
+                <div className="bg-black/40 border border-border-hi rounded-md p-3 font-mono text-xs text-accent leading-relaxed min-h-[160px] relative shadow-inner group">
+                    <textarea 
+                        value={commandText}
+                        onChange={(e) => setCommandText(e.target.value)}
+                        placeholder="Describe mission parameters..."
+                        className="w-full h-full bg-transparent border-none outline-none resize-none placeholder-text-lo/30"
+                        disabled={isGenerating}
+                    />
+                    {!isGenerating && (
+                        <div className="absolute bottom-2 right-2">
+                            <button 
+                                onClick={() => handleGenerate(commandText || templateText)}
+                                className="bg-accent/10 hover:bg-accent/20 text-accent border border-accent/30 rounded px-3 py-1 text-[10px] font-bold tracking-wider flex items-center gap-2 transition-all backdrop-blur-sm"
+                            >
+                                <Airplane size={12} className="animate-pulse"/> GENERATE WITH AI
+                            </button>
+                        </div>
+                    )}
+                    {isGenerating && <span className="animate-pulse text-accent">█</span>}
                 </div>
             </div>
 
@@ -213,9 +239,13 @@ const Phase1: React.FC<Phase1Props> = ({ onNext }) => {
                  <div className="font-mono text-[9px] tracking-[3px] uppercase text-text-lo mb-3 flex items-center gap-2">
                     Quick Templates <span className="flex-1 h-px bg-border/50"></span>
                 </div>
-                <button className="w-full text-left p-2 bg-accent/5 border border-border rounded text-text font-mono text-[10px] hover:border-accent2 hover:text-text-hi hover:bg-accent/10 transition-colors flex items-start gap-2 group">
-                    <CaretRight size={12} className="text-accent mt-0.5 group-hover:translate-x-0.5 transition-transform" />
-                    Deploy 300kg to Wamena + 200kg to Ilaga via Timika.
+                <button 
+                    onClick={() => handleGenerate(templateText)}
+                    disabled={isGenerating}
+                    className="w-full text-left p-2 bg-accent/5 border border-border rounded text-text font-mono text-[10px] hover:border-accent2 hover:text-text-hi hover:bg-accent/10 transition-colors flex items-start gap-2 group disabled:opacity-50"
+                >
+                    <CaretRight size={12} className="text-accent mt-0.5 group-hover:translate-x-0.5 transition-transform shrink-0" />
+                    <span className="line-clamp-2">Melaksanakan penerbangan dari Timika menuju Wamena dan Ilaga...</span>
                 </button>
             </div>
 

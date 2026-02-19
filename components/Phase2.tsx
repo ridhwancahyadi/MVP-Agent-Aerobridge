@@ -338,20 +338,6 @@ const Phase2: React.FC<Phase2Props> = ({ onBack, onNext }) => {
         <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-accent rounded-tl-lg z-10"></div>
         <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-accent rounded-br-lg z-10"></div>
 
-        {/* Header */}
-        <div className="p-4 border-b border-border flex justify-between items-start bg-accent/5">
-          <div>
-            <div className="font-orbitron text-base font-bold text-text-hi tracking-widest uppercase">Mission Analysis</div>
-            <div className="font-mono text-[10px] text-text-lo mt-1 tracking-wider">// AGENT ANALYSIS + LIVE OPTIMIZATION</div>
-          </div>
-          <div className="text-right">
-             <div className="font-mono text-[9px] text-text-lo tracking-widest uppercase">Prediction Confidence</div>
-             <div className={`font-orbitron text-xl font-bold leading-none ${getScoreColor(analysis.finalScore)}`}>
-               {analysis.finalScore}%
-             </div>
-          </div>
-        </div>
-
         {/* Body Grid - 3 Columns */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.4fr_1fr] divide-y lg:divide-y-0 lg:divide-x divide-border">
           
@@ -359,7 +345,7 @@ const Phase2: React.FC<Phase2Props> = ({ onBack, onNext }) => {
           <div className="p-4 flex flex-col gap-5">
             {/* Strategy Selection */}
             <div>
-                <div className="font-mono text-[9px] tracking-[3px] uppercase text-text-lo mb-2 flex items-center gap-2">
+                <div className="font-mono text-[9px] font-bold tracking-[3px] uppercase text-text-lo mb-2 flex items-center gap-2">
                 Select Strategy <span className="flex-1 h-px bg-border"></span>
                 </div>
                 <div className="flex flex-col gap-2">
@@ -375,7 +361,7 @@ const Phase2: React.FC<Phase2Props> = ({ onBack, onNext }) => {
                     >
                     {s.rec && <div className="absolute top-0 right-0 bg-green text-black font-mono text-[8px] font-bold px-2 py-0.5 rounded-bl-md">REC</div>}
                     <div className="flex justify-between items-center mb-0.5">
-                        <div className="text-[11px] font-bold text-text-hi tracking-wide">{s.name}</div>
+                        <div className="text-[13px] font-bold text-text-hi tracking-wide">{s.name}</div>
                         <div className={`font-orbitron text-[11px] font-bold ${getScoreColor(s.score)}`}>{s.score}</div>
                     </div>
                     <div className="font-mono text-[9px] text-text-lo leading-tight">{s.desc}</div>
@@ -386,7 +372,7 @@ const Phase2: React.FC<Phase2Props> = ({ onBack, onNext }) => {
             
             {/* AI REASONING (Unified One-Tone Card) - Expanded to fill column */}
             <div className="flex-1 flex flex-col gap-2 min-h-[300px]">
-                <div className="font-mono text-[9px] tracking-[3px] uppercase text-text-lo flex items-center gap-2">
+                <div className="font-mono text-[9px] font-bold tracking-[3px] uppercase text-text-lo flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse"></span>
                     Agent Reasoning <span className="flex-1 h-px bg-border"></span>
                 </div>
@@ -454,7 +440,7 @@ const Phase2: React.FC<Phase2Props> = ({ onBack, onNext }) => {
           <div className="p-4 flex flex-col gap-3">
             <TacticalMap />
             <div className="flex-1 min-h-0 flex flex-col gap-2 mt-2 relative">
-                 <div className="font-mono text-[9px] tracking-[3px] uppercase text-text-lo mb-1 flex items-center gap-2 sticky top-0 z-10 py-1">
+                 <div className="font-mono text-[9px] font-bold tracking-[3px] uppercase text-text-lo mb-1 flex items-center gap-2 sticky top-0 z-10 py-1">
                     Leg Analysis Breakdown <span className="flex-1 h-px bg-border"></span>
                 </div>
                 <div className="overflow-y-auto pr-1 flex flex-col gap-3 custom-scrollbar">
@@ -534,7 +520,7 @@ const Phase2: React.FC<Phase2Props> = ({ onBack, onNext }) => {
           {/* COLUMN 3: DYNAMIC PARAMETER TUNING */}
           <div className="p-3 bg-black/10 flex flex-col gap-2">
             
-            <div className="font-mono text-[9px] tracking-[3px] uppercase text-text-lo flex items-center gap-2">
+            <div className="font-mono text-[9px] font-bold tracking-[3px] uppercase text-text-lo flex items-center gap-2">
                 <Sliders size={12} weight="bold"/> Mission Parameters <span className="flex-1 h-px bg-border"></span>
             </div>
             
@@ -696,7 +682,7 @@ const Phase2: React.FC<Phase2Props> = ({ onBack, onNext }) => {
 
             {/* IMPACT SUMMARY (Restored Precise Table) */}
             <div className="mt-auto">
-                 <div className="font-mono text-[9px] tracking-[3px] uppercase text-text-lo mb-2 flex items-center gap-2">
+                 <div className="font-mono text-[9px] font-bold tracking-[3px] uppercase text-text-lo mb-2 flex items-center gap-2">
                     Impact Summary <span className="flex-1 h-px bg-border"></span>
                 </div>
                 <div className="bg-black/30 border border-border rounded-md p-2.5 mb-2">

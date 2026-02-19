@@ -11,22 +11,22 @@ const TacticalMap: React.FC = () => {
             <stop offset="100%" stopColor="transparent"/>
           </radialGradient>
           
-          {/* Leg 1 Gradient: Blue (Timika) -> Yellow (Wamena) */}
+          {/* Leg 1 Gradient: Blue (Timika) -> Blue (Wamena) */}
           <linearGradient id="gradLeg1" x1="60" y1="180" x2="200" y2="100" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="var(--accent)" />
-            <stop offset="100%" stopColor="var(--yellow)" />
+            <stop offset="0%" stopColor="#3b82f6" />
+            <stop offset="100%" stopColor="#3b82f6" />
           </linearGradient>
 
-          {/* Leg 2 Gradient: Yellow (Wamena) -> Green (Ilaga) */}
+          {/* Leg 2 Gradient: Yellow (Wamena) -> Yellow (Ilaga) */}
           <linearGradient id="gradLeg2" x1="200" y1="100" x2="320" y2="60" gradientUnits="userSpaceOnUse">
-             <stop offset="0%" stopColor="var(--yellow)" />
-             <stop offset="100%" stopColor="var(--green)" />
+             <stop offset="0%" stopColor="#eab308" />
+             <stop offset="100%" stopColor="#eab308" />
           </linearGradient>
 
-          {/* Deviation Gradient */}
+          {/* Deviation Gradient - Blue */}
           <linearGradient id="gradDev" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="var(--accent)" />
-            <stop offset="100%" stopColor="var(--text-hi)" />
+            <stop offset="0%" stopColor="#3b82f6" />
+            <stop offset="100%" stopColor="#60a5fa" />
           </linearGradient>
 
           <filter id="glow">
@@ -63,47 +63,47 @@ const TacticalMap: React.FC = () => {
         <line x1="60" y1="180" x2="200" y2="100" stroke="rgba(255,51,51,.3)" strokeWidth="1.5" strokeDasharray="6,4"/>
         <text x="95" y="175" fill="rgba(255,51,51,.5)" fontSize="7" fontFamily="Share Tech Mono" letterSpacing="1" transform="rotate(-30, 95, 175)">DIRECT (DANGER)</text>
 
-        {/* Deviation Route (Safe) - Curving UP around weather */}
-        <path d="M60,180 Q 90,100 200,100" stroke="url(#gradDev)" strokeWidth="1.5" fill="none" filter="url(#glow)">
+        {/* Deviation Route (Safe) - Curving UP around weather - BLUE */}
+        <path d="M60,180 Q 90,100 200,100" stroke="url(#gradDev)" strokeWidth="2" fill="none" filter="url(#glow)">
              <animate attributeName="stroke-dashoffset" from="400" to="0" dur="3s" repeatCount="indefinite"/>
              <animate attributeName="stroke-dasharray" values="0,400;200,200;400,0" dur="3s" repeatCount="indefinite"/>
         </path>
-        <text x="100" y="115" fill="var(--accent)" fontSize="7" fontFamily="Share Tech Mono" letterSpacing="1" opacity=".8" transform="rotate(-25, 100, 115)">DEVIATION (SAFE)</text>
+        <text x="100" y="115" fill="#3b82f6" fontSize="7" fontFamily="Share Tech Mono" letterSpacing="1" opacity=".8" transform="rotate(-25, 100, 115)">DEVIATION (SAFE)</text>
 
-        {/* Aircraft Dot Leg 1 */}
-        <circle r="4" fill="var(--accent)" filter="url(#glow)">
+        {/* Aircraft Dot Leg 1 - BLUE */}
+        <circle r="4" fill="#3b82f6" filter="url(#glow)">
             <animateMotion dur="3s" repeatCount="indefinite" path="M60,180 Q 90,100 200,100"/>
         </circle>
 
         {/* --- LEG 2: WAMENA -> ILAGA --- */}
-        {/* Using Gradient Stroke */}
+        {/* Using Gradient Stroke - YELLOW */}
         <line x1="200" y1="100" x2="320" y2="60" stroke="url(#gradLeg2)" strokeWidth="2" filter="url(#glow)"/>
 
-         {/* Aircraft Dot Leg 2 (Delayed) */}
-         <circle r="3" fill="var(--green)" filter="url(#glow)">
+         {/* Aircraft Dot Leg 2 (Delayed) - YELLOW */}
+         <circle r="3" fill="#eab308" filter="url(#glow)">
             <animateMotion dur="4s" begin="1s" repeatCount="indefinite" path="M200,100 L320,60"/>
         </circle>
 
 
         {/* --- LOCATIONS --- */}
 
-        {/* Timika (BLUE / ACCENT) */}
-        <circle cx="60" cy="180" r="5" fill="var(--accent)" filter="url(#glow)"/>
-        <circle cx="60" cy="180" r="9" fill="none" stroke="var(--accent)" strokeWidth="1" opacity=".4">
+        {/* Timika (BLUE) */}
+        <circle cx="60" cy="180" r="5" fill="#3b82f6" filter="url(#glow)"/>
+        <circle cx="60" cy="180" r="9" fill="none" stroke="#3b82f6" strokeWidth="1" opacity=".4">
              <animate attributeName="r" values="9;15;9" dur="2s" repeatCount="indefinite"/>
              <animate attributeName="opacity" values=".4;0;.4" dur="2s" repeatCount="indefinite"/>
         </circle>
-        <text x="60" y="200" textAnchor="middle" fill="var(--accent)" fontSize="9" fontFamily="Share Tech Mono" letterSpacing="1">TIMIKA (HQ)</text>
+        <text x="60" y="200" textAnchor="middle" fill="#3b82f6" fontSize="9" fontFamily="Share Tech Mono" letterSpacing="1">TIMIKA (HQ)</text>
 
-        {/* Wamena (YELLOW) */}
-        <circle cx="200" cy="100" r="5" fill="var(--yellow)" filter="url(#glow)"/>
-        <text x="200" y="85" textAnchor="middle" fill="var(--yellow)" fontSize="9" fontFamily="Share Tech Mono" letterSpacing="1">WAMENA</text>
-        <text x="200" y="94" textAnchor="middle" fill="rgba(255,215,0,.5)" fontSize="7" fontFamily="Share Tech Mono">STOP 1</text>
+        {/* Wamena (BLUE/YELLOW TRANSITION) */}
+        <circle cx="200" cy="100" r="5" fill="#eab308" filter="url(#glow)"/>
+        <text x="200" y="85" textAnchor="middle" fill="#eab308" fontSize="9" fontFamily="Share Tech Mono" letterSpacing="1">WAMENA</text>
+        <text x="200" y="94" textAnchor="middle" fill="rgba(234, 179, 8, .5)" fontSize="7" fontFamily="Share Tech Mono">STOP 1</text>
 
-        {/* Ilaga (GREEN) */}
-        <circle cx="320" cy="60" r="5" fill="var(--green)" filter="url(#glow)"/>
-        <text x="320" y="45" textAnchor="middle" fill="var(--green)" fontSize="9" fontFamily="Share Tech Mono" letterSpacing="1">ILAGA</text>
-        <text x="320" y="54" textAnchor="middle" fill="rgba(57,255,122,.5)" fontSize="7" fontFamily="Share Tech Mono">DEST 2</text>
+        {/* Ilaga (YELLOW) */}
+        <circle cx="320" cy="60" r="5" fill="#eab308" filter="url(#glow)"/>
+        <text x="320" y="45" textAnchor="middle" fill="#eab308" fontSize="9" fontFamily="Share Tech Mono" letterSpacing="1">ILAGA</text>
+        <text x="320" y="54" textAnchor="middle" fill="rgba(234, 179, 8, .5)" fontSize="7" fontFamily="Share Tech Mono">DEST 2</text>
 
         {/* Compass */}
         <g transform="translate(350, 20)">

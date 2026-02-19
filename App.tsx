@@ -49,13 +49,13 @@ const App: React.FC = () => {
 
       <TopBar currentTime={currentTime} />
       
-      <PhaseNav 
-        currentPhase={currentPhase} 
-        unlockedPhases={unlockedPhases} 
-        onPhaseChange={handlePhaseChange} 
-      />
+      <main className="relative z-10 pt-[70px] pb-20 px-4 max-w-7xl mx-auto">
+        <PhaseNav 
+          currentPhase={currentPhase} 
+          unlockedPhases={unlockedPhases} 
+          onPhaseChange={handlePhaseChange} 
+        />
 
-      <main className="relative z-10 pt-[110px] pb-20 px-4 max-w-7xl mx-auto">
         {currentPhase === 1 && <Phase1 onNext={() => unlockNextPhase(2)} />}
         {currentPhase === 2 && (
           <Phase2 

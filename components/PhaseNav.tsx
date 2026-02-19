@@ -15,7 +15,7 @@ const PhaseNav: React.FC<PhaseNavProps> = ({ currentPhase, unlockedPhases, onPha
   ];
 
   return (
-    <div className="fixed top-[52px] left-0 right-0 bg-panel/95 backdrop-blur-sm border-b border-border-hi grid grid-cols-3 z-[199]">
+    <div className="w-full mb-4 bg-panel/95 backdrop-blur-sm border border-border-hi rounded-lg overflow-hidden grid grid-cols-3">
       {phases.map((phase) => {
         const isActive = currentPhase === phase.id;
         const isUnlocked = unlockedPhases.has(phase.id);
