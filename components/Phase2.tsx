@@ -462,7 +462,9 @@ const Phase2: React.FC<Phase2Props> = ({ onBack, onNext }) => {
                         {/* Asset & Payload Context */}
                         <div className="mt-2 mb-2 p-1.5 bg-accent/5 border border-accent/10 rounded flex justify-between items-center">
                             <div className="flex items-center gap-2 text-[9px] font-mono text-text-hi">
-                                <Airplane size={12} className="text-accent" weight="fill" /> <span>EC725 CARACAL</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 256 256" className="text-accent">
+                                    <path d="M240,112a8,8,0,0,1-8,8H205.1l-14.9,29.8A16.1,16.1,0,0,1,175.9,160H80.1a16.1,16.1,0,0,1-14.3-9.2L50.9,112H24A8,8,0,0,1,24,96H56V64a8,8,0,0,1,16,0V96h64V64a8,8,0,0,1,16,0V96h48a8,8,0,0,1,0,16Zm-69.7,32,12-24H73.7l12,24ZM24,136a8,8,0,0,0-8,8v16a8,8,0,0,0,16,0V144A8,8,0,0,0,24,136Zm208,0a8,8,0,0,0-8,8v16a8,8,0,0,0,16,0V144A8,8,0,0,0,232,136ZM128,32a8,8,0,0,0-8-8H40a8,8,0,0,0,0,16h80A8,8,0,0,0,128,32Zm88-8H144a8,8,0,0,0,0,16h72a8,8,0,0,0,0-16Z"></path>
+                                </svg> <span>EC725 CARACAL</span>
                             </div>
                             <div className="flex items-center gap-1 text-[9px] font-mono text-text-lo">
                                 <Package size={12} weight="fill" className="text-accent"/> <span className="text-text-hi font-bold">300 KG</span> <span className="hidden sm:inline">(Med Supplies)</span>
@@ -499,7 +501,9 @@ const Phase2: React.FC<Phase2Props> = ({ onBack, onNext }) => {
                          {/* Asset & Payload Context */}
                          <div className="mt-2 mb-2 p-1.5 bg-green/5 border border-green/10 rounded flex justify-between items-center">
                             <div className="flex items-center gap-2 text-[9px] font-mono text-text-hi">
-                                <Airplane size={12} className="text-green" weight="fill" /> <span>EC725 CARACAL</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 256 256" className="text-green">
+                                    <path d="M240,112a8,8,0,0,1-8,8H205.1l-14.9,29.8A16.1,16.1,0,0,1,175.9,160H80.1a16.1,16.1,0,0,1-14.3-9.2L50.9,112H24A8,8,0,0,1,24,96H56V64a8,8,0,0,1,16,0V96h64V64a8,8,0,0,1,16,0V96h48a8,8,0,0,1,0,16Zm-69.7,32,12-24H73.7l12,24ZM24,136a8,8,0,0,0-8,8v16a8,8,0,0,0,16,0V144A8,8,0,0,0,24,136Zm208,0a8,8,0,0,0-8,8v16a8,8,0,0,0,16,0V144A8,8,0,0,0,232,136ZM128,32a8,8,0,0,0-8-8H40a8,8,0,0,0,0,16h80A8,8,0,0,0,128,32Zm88-8H144a8,8,0,0,0,0,16h72a8,8,0,0,0,0-16Z"></path>
+                                </svg> <span>EC725 CARACAL</span>
                             </div>
                             <div className="flex items-center gap-1 text-[9px] font-mono text-text-lo">
                                 <Lightning size={12} weight="fill" className="text-green"/> <span className="text-text-hi font-bold">200 KG</span> <span className="hidden sm:inline">(Power Units)</span>
