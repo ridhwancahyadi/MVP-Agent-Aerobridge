@@ -217,6 +217,21 @@ const Phase1: React.FC<Phase1Props> = ({ onNext }) => {
                 </div>
             </div>
 
+             {/* Quick Templates */}
+             <div className="bg-black/20 border border-border rounded-md p-3">
+                 <div className="font-mono text-[9px] tracking-[3px] uppercase text-text-lo mb-3 flex items-center gap-2">
+                    Quick Templates <span className="flex-1 h-px bg-border/50"></span>
+                </div>
+                <button 
+                    onClick={() => handleGenerate(templateText)}
+                    disabled={isGenerating}
+                    className="w-full text-left p-2 bg-accent/5 border border-border rounded text-text font-mono text-[10px] hover:border-accent2 hover:text-text-hi hover:bg-accent/10 transition-colors flex items-start gap-2 group disabled:opacity-50"
+                >
+                    <CaretRight size={12} className="text-accent mt-0.5 group-hover:translate-x-0.5 transition-transform shrink-0" />
+                    <span className="line-clamp-2">Melaksanakan penerbangan dari Timika menuju Wamena dan Ilaga...</span>
+                </button>
+            </div>
+
             {/* Mission Parameters */}
             <div className="bg-black/20 border border-border rounded-md p-3">
                 <div className="font-mono text-[9px] tracking-[3px] uppercase text-text-lo mb-3 flex items-center gap-2">
@@ -232,21 +247,6 @@ const Phase1: React.FC<Phase1Props> = ({ onNext }) => {
                     />
                     <CalendarBlank size={14} className="absolute right-3 top-2.5 text-accent pointer-events-none" />
                 </div>
-            </div>
-
-             {/* Quick Templates */}
-             <div className="bg-black/20 border border-border rounded-md p-3">
-                 <div className="font-mono text-[9px] tracking-[3px] uppercase text-text-lo mb-3 flex items-center gap-2">
-                    Quick Templates <span className="flex-1 h-px bg-border/50"></span>
-                </div>
-                <button 
-                    onClick={() => handleGenerate(templateText)}
-                    disabled={isGenerating}
-                    className="w-full text-left p-2 bg-accent/5 border border-border rounded text-text font-mono text-[10px] hover:border-accent2 hover:text-text-hi hover:bg-accent/10 transition-colors flex items-start gap-2 group disabled:opacity-50"
-                >
-                    <CaretRight size={12} className="text-accent mt-0.5 group-hover:translate-x-0.5 transition-transform shrink-0" />
-                    <span className="line-clamp-2">Melaksanakan penerbangan dari Timika menuju Wamena dan Ilaga...</span>
-                </button>
             </div>
 
             {/* Flight Route Section - Moved to Left for Balance or keep in separate container */}
