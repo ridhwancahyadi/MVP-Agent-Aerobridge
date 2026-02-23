@@ -1,117 +1,91 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+
+// Fix for default marker icons in React-Leaflet
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+});
+
+const locations = [
+  { name: 'GUSIMAWA (WASJ)', coords: [-3.05, 133.883333] as [number, number], type: 'origin' },
+  { name: 'ILAGA (WAYL)', coords: [-3.977222, 137.620278] as [number, number], type: 'waypoint' },
+  { name: 'SINAK (WABS)', coords: [-3.822728, 137.84115] as [number, number], type: 'dest' },
+];
+
+const routeColor = '#3b82f6'; // Blue for the route
+
+// Component to fit bounds
+const FitBounds = ({ bounds }: { bounds: L.LatLngBoundsExpression }) => {
+  const map = useMap();
+  useEffect(() => {
+    map.fitBounds(bounds, { padding: [50, 50] });
+  }, [map, bounds]);
+  return null;
+};
 
 const TacticalMap: React.FC = () => {
+  const polylinePositions = locations.map(loc => loc.coords);
+  const bounds = L.latLngBounds(locations.map(loc => loc.coords));
+
   return (
-    <div className="bg-black/50 border border-border rounded-lg overflow-hidden relative w-full aspect-[16/9] lg:aspect-auto lg:h-[220px] shadow-inner group">
-      <svg className="w-full h-full block" viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <radialGradient id="wx" cx="55%" cy="42%" r="18%">
-            <stop offset="0%" stopColor="#ff3333" stopOpacity=".35"/>
-            <stop offset="60%" stopColor="#ff8800" stopOpacity=".15"/>
-            <stop offset="100%" stopColor="transparent"/>
-          </radialGradient>
-          
-          {/* Leg 1 Gradient: Blue (Timika) -> Blue (Wamena) */}
-          <linearGradient id="gradLeg1" x1="60" y1="180" x2="200" y2="100" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#3b82f6" />
-            <stop offset="100%" stopColor="#3b82f6" />
-          </linearGradient>
-
-          {/* Leg 2 Gradient: Yellow (Wamena) -> Yellow (Ilaga) */}
-          <linearGradient id="gradLeg2" x1="200" y1="100" x2="320" y2="60" gradientUnits="userSpaceOnUse">
-             <stop offset="0%" stopColor="#eab308" />
-             <stop offset="100%" stopColor="#eab308" />
-          </linearGradient>
-
-          {/* Deviation Gradient - Blue */}
-          <linearGradient id="gradDev" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#3b82f6" />
-            <stop offset="100%" stopColor="#60a5fa" />
-          </linearGradient>
-
-          <filter id="glow">
-            <feGaussianBlur stdDeviation="2" result="blur"/>
-            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
-        </defs>
-
-        {/* Map Background */}
-        <rect width="380" height="220" fill="#02080c" />
-
-        {/* Terrain Shapes (Papua Highlands Abstract) */}
-        <ellipse cx="190" cy="130" rx="160" ry="60" fill="rgba(0,40,20,.4)" stroke="rgba(0,80,40,.3)" strokeWidth="1"/>
-        <ellipse cx="240" cy="100" rx="80" ry="35" fill="rgba(0,30,15,.5)" stroke="rgba(0,60,30,.3)" strokeWidth="1"/>
-        <ellipse cx="150" cy="150" rx="60" ry="25" fill="rgba(0,25,12,.4)"/>
-
-        {/* Grid Lines */}
-        {[55, 110, 165].map(y => (
-          <line key={`h-${y}`} x1="0" y1={y} x2="380" y2={y} stroke="rgba(0,229,255,.07)" strokeWidth="1"/>
-        ))}
-        {[95, 190, 285].map(x => (
-          <line key={`v-${x}`} x1={x} y1="0" x2={x} y2="220" stroke="rgba(0,229,255,.07)" strokeWidth="1"/>
-        ))}
-
-        {/* --- LEG 1: TIMIKA -> WAMENA --- */}
+    <div className="h-[300px] w-full rounded-lg overflow-hidden border border-border relative z-0">
+      <MapContainer 
+        center={[-3.5, 135.5]} 
+        zoom={7} 
+        style={{ height: '100%', width: '100%' }}
+        zoomControl={false}
+        attributionControl={false}
+      >
+        <TileLayer
+          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+        />
         
-        {/* Weather Cell on Direct Route (Midpoint approx 130, 140) */}
-        <circle cx="130" cy="140" r="30" fill="url(#wx)" className="animate-pulse"/>
-        <circle cx="130" cy="140" r="22" fill="rgba(255,50,50,.12)" stroke="rgba(255,50,50,.4)" strokeWidth="1" strokeDasharray="4,3"/>
-        <text x="130" y="143" textAnchor="middle" fill="rgba(255,100,100,.9)" fontSize="10" fontFamily="Share Tech Mono">⚡</text>
-        <text x="130" y="153" textAnchor="middle" fill="rgba(255,100,100,.7)" fontSize="7" fontFamily="Share Tech Mono" letterSpacing="1">STORM CELL</text>
+        <FitBounds bounds={bounds} />
 
-        {/* Direct Route (Danger) */}
-        <line x1="60" y1="180" x2="200" y2="100" stroke="rgba(255,51,51,.3)" strokeWidth="1.5" strokeDasharray="6,4"/>
-        <text x="95" y="175" fill="rgba(255,51,51,.5)" fontSize="7" fontFamily="Share Tech Mono" letterSpacing="1" transform="rotate(-30, 95, 175)">DIRECT (DANGER)</text>
+        <Polyline 
+            positions={polylinePositions} 
+            pathOptions={{ color: routeColor, weight: 2, dashArray: '5, 10', opacity: 0.7 }} 
+        />
 
-        {/* Deviation Route (Safe) - Curving UP around weather - BLUE */}
-        <path d="M60,180 Q 90,100 200,100" stroke="url(#gradDev)" strokeWidth="2" fill="none" filter="url(#glow)">
-             <animate attributeName="stroke-dashoffset" from="400" to="0" dur="3s" repeatCount="indefinite"/>
-             <animate attributeName="stroke-dasharray" values="0,400;200,200;400,0" dur="3s" repeatCount="indefinite"/>
-        </path>
-        <text x="100" y="115" fill="#3b82f6" fontSize="7" fontFamily="Share Tech Mono" letterSpacing="1" opacity=".8" transform="rotate(-25, 100, 115)">DEVIATION (SAFE)</text>
-
-        {/* Aircraft Dot Leg 1 - BLUE */}
-        <circle r="4" fill="#3b82f6" filter="url(#glow)">
-            <animateMotion dur="3s" repeatCount="indefinite" path="M60,180 Q 90,100 200,100"/>
-        </circle>
-
-        {/* --- LEG 2: WAMENA -> ILAGA --- */}
-        {/* Using Gradient Stroke - YELLOW */}
-        <line x1="200" y1="100" x2="320" y2="60" stroke="url(#gradLeg2)" strokeWidth="2" filter="url(#glow)"/>
-
-         {/* Aircraft Dot Leg 2 (Delayed) - YELLOW */}
-         <circle r="3" fill="#eab308" filter="url(#glow)">
-            <animateMotion dur="4s" begin="1s" repeatCount="indefinite" path="M200,100 L320,60"/>
-        </circle>
-
-
-        {/* --- LOCATIONS --- */}
-
-        {/* Timika (BLUE) */}
-        <circle cx="60" cy="180" r="5" fill="#3b82f6" filter="url(#glow)"/>
-        <circle cx="60" cy="180" r="9" fill="none" stroke="#3b82f6" strokeWidth="1" opacity=".4">
-             <animate attributeName="r" values="9;15;9" dur="2s" repeatCount="indefinite"/>
-             <animate attributeName="opacity" values=".4;0;.4" dur="2s" repeatCount="indefinite"/>
-        </circle>
-        <text x="60" y="200" textAnchor="middle" fill="#3b82f6" fontSize="9" fontFamily="Share Tech Mono" letterSpacing="1">TIMIKA (HQ)</text>
-
-        {/* Wamena (BLUE/YELLOW TRANSITION) */}
-        <circle cx="200" cy="100" r="5" fill="#eab308" filter="url(#glow)"/>
-        <text x="200" y="85" textAnchor="middle" fill="#eab308" fontSize="9" fontFamily="Share Tech Mono" letterSpacing="1">WAMENA</text>
-        <text x="200" y="94" textAnchor="middle" fill="rgba(234, 179, 8, .5)" fontSize="7" fontFamily="Share Tech Mono">STOP 1</text>
-
-        {/* Ilaga (YELLOW) */}
-        <circle cx="320" cy="60" r="5" fill="#eab308" filter="url(#glow)"/>
-        <text x="320" y="45" textAnchor="middle" fill="#eab308" fontSize="9" fontFamily="Share Tech Mono" letterSpacing="1">ILAGA</text>
-        <text x="320" y="54" textAnchor="middle" fill="rgba(234, 179, 8, .5)" fontSize="7" fontFamily="Share Tech Mono">DEST 2</text>
-
-        {/* Compass */}
-        <g transform="translate(350, 20)">
-            <text x="0" y="0" fill="rgba(0,229,255,.4)" fontSize="8" fontFamily="Share Tech Mono" textAnchor="middle">N</text>
-            <line x1="0" y1="2" x2="0" y2="14" stroke="rgba(0,229,255,.3)" strokeWidth="1"/>
-            <text x="0" y="22" fill="rgba(0,229,255,.3)" fontSize="6" fontFamily="Share Tech Mono" textAnchor="middle">↑</text>
-        </g>
-      </svg>
+        {locations.map((loc, idx) => (
+          <Marker 
+            key={idx} 
+            position={loc.coords}
+            icon={L.divIcon({
+                className: 'custom-marker',
+                html: `<div style="
+                    background-color: ${loc.type === 'origin' ? '#3b82f6' : loc.type === 'dest' ? '#eab308' : '#10b981'};
+                    width: 12px;
+                    height: 12px;
+                    border-radius: 50%;
+                    border: 2px solid white;
+                    box-shadow: 0 0 10px ${loc.type === 'origin' ? '#3b82f6' : loc.type === 'dest' ? '#eab308' : '#10b981'};
+                "></div>`,
+                iconSize: [12, 12],
+                iconAnchor: [6, 6]
+            })}
+          >
+            <Popup className="font-mono text-[10px]">
+              <div className="font-bold">{loc.name}</div>
+              <div className="text-gray-500">{loc.coords[0].toFixed(4)}, {loc.coords[1].toFixed(4)}</div>
+            </Popup>
+          </Marker>
+        ))}
+      </MapContainer>
+      
+      {/* Overlay Title */}
+      <div className="absolute top-2 left-2 z-[400] bg-black/50 backdrop-blur-sm px-2 py-1 rounded border border-white/10">
+        <div className="text-[10px] font-mono font-bold text-white flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+            LIVE TACTICAL FEED
+        </div>
+      </div>
     </div>
   );
 };

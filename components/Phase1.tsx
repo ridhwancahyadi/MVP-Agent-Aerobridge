@@ -39,6 +39,7 @@ const Phase1: React.FC<Phase1Props> = ({ onNext }) => {
   
   // State for Date
   const [missionDate, setMissionDate] = useState<string>(new Date().toISOString().split('T')[0]);
+  const [objective, setObjective] = useState<string>('Balanced');
 
   // State for Route
   const [routes, setRoutes] = useState<RouteItem[]>([]);
@@ -55,13 +56,13 @@ const Phase1: React.FC<Phase1Props> = ({ onNext }) => {
   // Payload Form State
   const [pItem, setPItem] = useState('');
   const [pWeight, setPWeight] = useState('');
-  const [pOrigin, setPOrigin] = useState('Timika');
+  const [pOrigin, setPOrigin] = useState('WASJ');
   const [pDest, setPDest] = useState('');
   const [pIsUrgent, setPIsUrgent] = useState(false);
 
   const [isGenerating, setIsGenerating] = useState(false);
 
-  const templateText = "Melaksanakan penerbangan dari Timika menuju Wamena dan Ilaga dengan membawa muatan berupa 300 kg medical supplies untuk Wamena dan 200 kg power unit untuk Ilaga, menggunakan helikopter EC725 Caracal.";
+  const templateText = "Melaksanakan penerbangan dari Gusimawa (WASJ) menuju Ilaga (WAYL) dan Sinak (WABS) dengan membawa muatan berupa 100 kg kargo untuk Ilaga dan 100 kg kargo untuk Sinak, menggunakan helikopter EC725 Caracal.";
 
   const handleGenerate = (textToType: string = templateText) => {
     if (isGenerating) return;
@@ -88,16 +89,16 @@ const Phase1: React.FC<Phase1Props> = ({ onNext }) => {
 
   const populateMissionData = () => {
     setRoutes([
-        { id: 1, location: 'Timika (Base)' },
-        { id: 2, location: 'Wamena (Stop 1)' },
-        { id: 3, location: 'Ilaga (Dest)' }
+        { id: 1, location: 'Gusimawa (WASJ)' },
+        { id: 2, location: 'Ilaga (WAYL)' },
+        { id: 3, location: 'Sinak (WABS)' }
     ]);
     setFleets([
-        { id: 1, name: 'EC725 Caracal', type: 'Rotary', cap: 'HEAVY LIFT', fuel: 1200 },
+        { id: 1, name: 'EC725 Caracal', type: 'Rotary', cap: 'HEAVY LIFT', fuel: 1500 },
     ]);
     setPayloads([
-        { id: 1, item: 'Medical Supplies', weight: 300, origin: 'Timika', dest: 'Wamena', isUrgent: true },
-        { id: 2, item: 'Power Units', weight: 200, origin: 'Timika', dest: 'Ilaga', isUrgent: false },
+        { id: 1, item: 'Cargo WAYL', weight: 100, origin: 'WASJ', dest: 'WAYL', isUrgent: true },
+        { id: 2, item: 'Cargo WABS', weight: 100, origin: 'WASJ', dest: 'WABS', isUrgent: true },
     ]);
   };
 
@@ -228,7 +229,7 @@ const Phase1: React.FC<Phase1Props> = ({ onNext }) => {
                     className="w-full text-left p-2 bg-accent/5 border border-border rounded text-text font-mono text-[10px] hover:border-accent2 hover:text-text-hi hover:bg-accent/10 transition-colors flex items-start gap-2 group disabled:opacity-50"
                 >
                     <CaretRight size={12} className="text-accent mt-0.5 group-hover:translate-x-0.5 transition-transform shrink-0" />
-                    <span className="line-clamp-2">Melaksanakan penerbangan dari Timika menuju Wamena dan Ilaga...</span>
+                    <span className="line-clamp-2">Melaksanakan penerbangan dari Gusimawa (WASJ) menuju Ilaga (WAYL)...</span>
                 </button>
             </div>
 
@@ -238,7 +239,7 @@ const Phase1: React.FC<Phase1Props> = ({ onNext }) => {
                     Mission Parameters <span className="flex-1 h-px bg-border/50"></span>
                 </div>
                 <label className="block font-mono text-[10px] text-text-lo mb-1 uppercase tracking-wider">Mission Date</label>
-                <div className="relative group">
+                <div className="relative group mb-3">
                     <input 
                     type="date" 
                     value={missionDate}
@@ -246,6 +247,21 @@ const Phase1: React.FC<Phase1Props> = ({ onNext }) => {
                     className="w-full bg-black/40 border border-border text-text-hi font-mono text-xs px-3 py-2 rounded focus:border-accent focus:outline-none focus:shadow-[0_0_10px_rgba(0,229,255,0.1)] transition-all uppercase appearance-none"
                     />
                     <CalendarBlank size={14} className="absolute right-3 top-2.5 text-accent pointer-events-none" />
+                </div>
+
+                <label className="block font-mono text-[10px] text-text-lo mb-1 uppercase tracking-wider">Objective</label>
+                <div className="relative group">
+                    <select
+                        value={objective}
+                        onChange={(e) => setObjective(e.target.value)}
+                        className="w-full bg-black/40 border border-border text-text-hi font-mono text-xs px-3 py-2 rounded focus:border-accent focus:outline-none focus:shadow-[0_0_10px_rgba(0,229,255,0.1)] transition-all uppercase appearance-none"
+                    >
+                        <option value="Emergency">Emergency</option>
+                        <option value="Safety First">Safety First</option>
+                        <option value="Balanced">Balanced</option>
+                        <option value="Logistic Max">Logistic Max</option>
+                    </select>
+                    <CaretDown size={14} className="absolute right-3 top-2.5 text-accent pointer-events-none" />
                 </div>
             </div>
 
